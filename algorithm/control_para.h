@@ -15,7 +15,8 @@
 
 #define KP_PLL 0.1
 #define KI_PLL 1.0
-#define TS_PLL 1e-4
+#define TS_PLL_TEN_KHZ 1e-4
+#define TS_PLL_TWENTY_KHZ 5e-5
 
 #define K_FEEDFORWARD 0.95
 

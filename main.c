@@ -64,7 +64,7 @@ int main(void)
     float phase = 0.0f ;
     float pi_output = 0.0f ;
 
-    init_pll_sogi(&s_pll_sogi_gird, KP_PLL, KI_PLL, TS_PLL) ; // InitPLL();
+    init_pll_sogi(&s_pll_sogi_gird, KP_PLL, KI_PLL, TS_PLL_TWENTY_KHZ) ; // InitPLL();
 
     filter_init(p_low_pass_filter, num_filter, den_filter, order_filter ) ;
 
@@ -116,15 +116,16 @@ int main(void)
 
                 // SCOPE_PU ;
                 // Real repetitive controller
-                rc_output = calc_wdvrc(p_wdvrc, phase, pid_ig.reference - MeasureBuf[CH_GRID_CURRENT], 1);
+                // rc_output = calc_wdvrc(p_wdvrc, phase, pid_ig.reference - MeasureBuf[CH_GRID_CURRENT], 1);
                 // Simulate repetitive controller
-
+                rc_output = calc_wdvrc(p_wdvrc, phase, 0.001 * sinf(phase), 1);
                 // SCOPE_PD ;
                 //debug_scope_1[debug_scope_count] = rc_output ;
                 // rc_output = 0.0 ;
 
                 pi_output = Calc_pidStruct(&pid_ig, MeasureBuf[CH_GRID_CURRENT]) ;
 
+                // Read time damping is used to reduce delay ;
                 control_modulation = pi_output // PI controller
                         + rc_output // Repetitive Controller
                         + MeasureBuf[CH_AC_VOLTAGE] * K_FEEDFORWARD; // PCC voltage feedforward
@@ -179,6 +180,7 @@ int main(void)
 //            }
             if(g_inv_state != ErrorEncountered){
                 StoreVoltage(0, 2 + sinf(phase) , ADDR_DAC8554, 1);
+                //StoreVoltage(0, 2 + 0.5 * rc_output , ADDR_DAC8554, 1);
             // StoreVoltage(1,  2 + 2 * debug_scope_1[debug_scope_count] , ADDR_DAC8554, 1);
             }
 #else
@@ -191,7 +193,7 @@ int main(void)
 #endif
 
 #endif
-            SCOPE_PU ;
+            SCOPE_PD ;
             }
     }
 }

@@ -30,14 +30,30 @@ int flag_timer2_updated = 0 ;
 
 interrupt void epwm1_timer_isr(void)
 {
-#if OPENLOOP_TEST
-    //sin_test_count ++ ;
-    //sin_test_count %= 200 ;
-    //sin_test = 0.85 * sin(6.28 * sin_test_count /200);
-    //PWM_Carrier_Update(-sin_test);
-    PWM_Carrier_Update(-0.5);
-#else
-#endif
+    /***** 7.1us:START *****/
+    SCOPE_PU ;
+
+    AD7606_XINTF_Read_All();
+    damping = C_CTRL_KD * MeasureBuf[CH_CAP_CURRENT];
+    control_modulation = - control_modulation - damping ;
+    vm = control_modulation / MeasureBuf[CH_DC_BUS] ;
+    CMP =  CarrierAmplitude + CarrierAmplitude *  vm ;
+
+    if(CMP > MODULATION_UPPER_THRESHOLD_UINT){
+        CMP = MODULATION_UPPER_THRESHOLD_UINT ;
+    }else if(CMP < MODULATION_LOWER_THRESHOLD_UINT ){
+        CMP = MODULATION_LOWER_THRESHOLD_UINT ;
+    }
+
+    EPwm1Regs.CMPA.half.CMPA = CMP ;
+    EPwm2Regs.CMPA.half.CMPA = CMP ;
+
+    SCOPE_PD ;
+    /***** 7.1us:END *****/
+
+    flag_timer2_updated = 1 ;
+    AD7606_PostSampleDo();
+
     EPwm1Regs.ETCLR.bit.INT=1;
     PieCtrlRegs.PIEACK.all=PIEACK_GROUP3;
 }

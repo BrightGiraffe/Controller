@@ -4,11 +4,11 @@
 #include "../../filter/filter.h"
 #include "math.h"
 
-#define MAX_STEPS_FOR_BUFFER 205 
-#define MIN_STEPS_FOR_BUFFER 196
-#define STEPS_AT_BASE_FREQ 200
+#define MAX_STEPS_FOR_BUFFER 410
+#define MIN_STEPS_FOR_BUFFER 392
+#define STEPS_AT_BASE_FREQ 400
 
-#define SLICE_ANGLE 0.031415927
+#define SLICE_ANGLE 0.01570796326795
 #define DOUBLE_PI_DVRC 6.28318530718
 #define PI_DVRC 3.14159265359
 

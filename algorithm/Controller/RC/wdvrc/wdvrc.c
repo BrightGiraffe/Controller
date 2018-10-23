@@ -217,7 +217,7 @@ int find_varying_delay(dvrc_struct * ps, float cur_phase){
             return (i - 1) ;
         }
     }
-    return 200 ;
+    return STEPS_AT_BASE_FREQ ;
 }
 
 float compare_phase_angle(float cur_phase, float prev_phase){
