@@ -28,7 +28,7 @@ extern float MeasureBuf[8];
 
 int flag_timer2_updated = 0 ;
 
-interrupt void epwm1_timer_isr(void)
+interrupt void epwm1_timer_isr(void) // 7500
 {
     /***** 7.1us:START *****/
     SCOPE_PU ;
@@ -58,7 +58,7 @@ interrupt void epwm1_timer_isr(void)
     PieCtrlRegs.PIEACK.all=PIEACK_GROUP3;
 }
 
-interrupt void epwm2_timer_isr(void)
+interrupt void epwm2_timer_isr(void) // 0
 {
     /***** 7.1us:START *****/
     SCOPE_PU ;
@@ -111,8 +111,8 @@ void PWM_Init(int freq)
     EPwm1Regs.TBCTL.bit.PRDLD = CC_SHADOW;
     EPwm1Regs.TBCTL.bit.SYNCOSEL = TB_CTR_ZERO;
 
-    EPwm1Regs.CMPCTL.bit.SHDWAMODE = CC_IMMEDIATE; // Load immediately
-    EPwm1Regs.CMPCTL.bit.SHDWBMODE = CC_IMMEDIATE; // Load immediately
+    EPwm1Regs.CMPCTL.bit.SHDWAMODE = CC_SHADOW; // Load immediately
+    EPwm1Regs.CMPCTL.bit.SHDWBMODE = CC_SHADOW; // Load immediately
     EPwm1Regs.CMPCTL.bit.LOADAMODE = CC_CTR_ZERO_PRD; //CC_CTR_ZERO
     EPwm1Regs.CMPCTL.bit.LOADBMODE = CC_CTR_ZERO_PRD;
 
@@ -120,8 +120,8 @@ void PWM_Init(int freq)
     EPwm1Regs.AQCTLA.bit.CAD = AQ_CLEAR;           // Clear PWM1A on event A, down count
     EPwm1Regs.AQCTLA.bit.PRD = AQ_NO_ACTION ;
     EPwm1Regs.AQCTLA.bit.ZRO = AQ_NO_ACTION ;
-    EPwm1Regs.AQCTLA.bit.CBD = AQ_SET ;
     EPwm1Regs.AQCTLA.bit.CBU = AQ_CLEAR ;
+    EPwm1Regs.AQCTLA.bit.CBD = AQ_SET ;
 
     EPwm1Regs.DBCTL.bit.OUT_MODE= DB_DISABLE;
     EPwm1Regs.DBCTL.bit.POLSEL=DB_ACTV_HIC;
@@ -145,8 +145,8 @@ void PWM_Init(int freq)
     EPwm2Regs.TBCTL.bit.PRDLD = CC_SHADOW ;
     EPwm2Regs.TBCTL.bit.SYNCOSEL = TB_SYNC_IN ;
 
-    EPwm2Regs.CMPCTL.bit.SHDWAMODE = CC_IMMEDIATE; // Load immediately
-    EPwm2Regs.CMPCTL.bit.SHDWBMODE = CC_IMMEDIATE; // Load immediately
+    EPwm2Regs.CMPCTL.bit.SHDWAMODE = CC_SHADOW; // Load immediately
+    EPwm2Regs.CMPCTL.bit.SHDWBMODE = CC_SHADOW; // Load immediately
     EPwm2Regs.CMPCTL.bit.LOADAMODE = CC_CTR_ZERO_PRD ; // CC_CTR_ZERO_PRD ; // Load on Zero
     EPwm2Regs.CMPCTL.bit.LOADBMODE = CC_CTR_ZERO_PRD ;
 
