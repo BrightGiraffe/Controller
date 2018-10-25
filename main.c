@@ -7,7 +7,9 @@
 #include "main.h"
 
 float rc_output = 0.0 ;
-float debug_scope_1[200], debug_scope_2[200];
+float error_rc_input ;
+float error_pi_input ;
+float debug_scope_1[400] ;
 Uint16 debug_scope_count = 0 ;
 
 float control_modulation = 0.0f ;
