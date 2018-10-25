@@ -18,8 +18,7 @@ void Init_pidStruct(pidStruct * s, float kp, float ki) {
     s->isum_low = -100.0;
 }
 
-float Calc_pidStruct(pidStruct * s, float feedback) {
-    float error = s->reference - feedback ;
+float Calc_pidStruct(pidStruct * s, float error) {
     s->sum_ki += s->ki * error ;
 
     if(s->sum_ki > s->isum_high ){

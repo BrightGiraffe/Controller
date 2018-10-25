@@ -21,6 +21,6 @@ typedef struct {
 } pidStruct;
 
 void Init_pidStruct(pidStruct * s, float, float) ;
-float Calc_pidStruct(pidStruct * s, float reference);
+float Calc_pidStruct(pidStruct * s, float error);
 
 #endif

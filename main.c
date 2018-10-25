@@ -84,9 +84,8 @@ int main(void)
             SCOPE_PU ;
             flag_timer2_updated = 0 ;
             debug_scope_count ++ ;
-            debug_scope_count %= 200 ;
+            debug_scope_count %= 400 ;
             debug_scope_1[debug_scope_count] =  MeasureBuf[CH_DC_BUS] ;
-            debug_scope_2[debug_scope_count] = MeasureBuf[CH_AC_VOLTAGE] ;
 
             if( ErrorDetected() ){
                 Shutdown_PWM_RELAY();
@@ -115,21 +114,20 @@ int main(void)
 
             // close loop enabled
             if(g_inv_state == CurrentControlled){
-
+                error_rc_input = pid_ig.reference - MeasureBuf[CH_GRID_CURRENT] ;
                 // SCOPE_PU ;
                 // Real repetitive controller
-                // rc_output = calc_wdvrc(p_wdvrc, phase, pid_ig.reference - MeasureBuf[CH_GRID_CURRENT], 1);
+                // rc_output = calc_wdvrc(p_wdvrc, phase, error_rc_input, 1);
                 // Simulate repetitive controller
                 rc_output = calc_wdvrc(p_wdvrc, phase, 0.001 * sinf(phase), 1);
                 // SCOPE_PD ;
                 //debug_scope_1[debug_scope_count] = rc_output ;
                 // rc_output = 0.0 ;
-
-                pi_output = Calc_pidStruct(&pid_ig, MeasureBuf[CH_GRID_CURRENT]) ;
+                error_pi_input = error_rc_input + rc_output ;
+                pi_output = Calc_pidStruct(&pid_ig, error_pi_input) ;
 
                 // Read time damping is used to reduce delay ;
                 control_modulation = pi_output // PI controller
-                        + rc_output // Repetitive Controller
                         + MeasureBuf[CH_AC_VOLTAGE] * K_FEEDFORWARD; // PCC voltage feedforward
                 // rc_output = 0.0 ;
 
