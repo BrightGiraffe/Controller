@@ -27,6 +27,7 @@ extern float MeasureBuf[8];
 #endif
 
 int flag_timer2_updated = 0 ;
+float u = 0 ;
 
 interrupt void epwm1_timer_isr(void) // 7500
 {
@@ -35,8 +36,8 @@ interrupt void epwm1_timer_isr(void) // 7500
 
     AD7606_XINTF_Read_All();
     damping = C_CTRL_KD * MeasureBuf[CH_CAP_CURRENT];
-    control_modulation = control_modulation - damping ;
-    vm = - control_modulation / MeasureBuf[CH_DC_BUS] ;
+    u = control_modulation - damping ;
+    vm = - u / MeasureBuf[CH_DC_BUS] ;
     if(vm > 0.95){
         vm = 0.95 ;
     }else if (vm < -0.95){
@@ -56,7 +57,7 @@ interrupt void epwm1_timer_isr(void) // 7500
     SCOPE_PD ;
     /***** 7.1us:END *****/
 
-    flag_timer2_updated = 1 ;
+    //flag_timer2_updated = 1 ;
     AD7606_PostSampleDo();
 
     EPwm1Regs.ETCLR.bit.INT=1;
@@ -70,8 +71,8 @@ interrupt void epwm2_timer_isr(void) // 0
 
     AD7606_XINTF_Read_All();
     damping = C_CTRL_KD * MeasureBuf[CH_CAP_CURRENT];
-    control_modulation = control_modulation - damping ;
-    vm = - control_modulation / MeasureBuf[CH_DC_BUS] ;
+    u = control_modulation - damping ;
+    vm = - u / MeasureBuf[CH_DC_BUS] ;
     if(vm > 0.95){
         vm = 0.95 ;
     }else if (vm < -0.95){

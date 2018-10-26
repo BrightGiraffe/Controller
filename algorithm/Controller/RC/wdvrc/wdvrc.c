@@ -1,9 +1,5 @@
 #include "wdvrc.h"
 
-#include "../../../../include/DSP2833x_Device.h"
-#include "../../../../include/DSP2833x_Examples.h"
-#include "../../../../others/keys.h"
-
 #if SIMULINK_DEBUG 
 dvrc_struct dvrc_s ;
 dvrc_struct * p_dvrc_s = & dvrc_s;
@@ -96,6 +92,9 @@ double calc_wdvrc_simulink(double phase, double error ,int flag_start_calc){
 }
 
 #else
+#include "../../../../include/DSP2833x_Device.h"
+#include "../../../../include/DSP2833x_Examples.h"
+#include "../../../../others/keys.h"
 
 void init_wdvrc(dvrc_struct * p_dvrc_s, filter_s * p_f_s, float q_main, float k_rc, int steps_lead){
     int i ; 
@@ -158,18 +157,15 @@ float calc_wdvrc(dvrc_struct * p_dvrc_s, float phase, float error, int flag_star
 
         ret_dvrc = filter_calc(p_dvrc_s->pfs, ret_dvrc) ; // Lowpass filter 
 
-        // update index:
-        p_dvrc_s->q_output_index = index_move(p_dvrc_s->q_output_index, 1);
-        p_dvrc_s->delay_prev_index = index_move(p_dvrc_s->delay_prev_index, 1);
-        // SCOPE_PD ;
-
     }
 
     p_dvrc_s->phase_buffer[ p_dvrc_s-> phase_index ] = phase ;
-    // Update phase index 
+    // Update index
     p_dvrc_s->phase_index = index_move(p_dvrc_s->phase_index, 1) ;
+    p_dvrc_s->q_output_index = index_move(p_dvrc_s->q_output_index, 1);
+    p_dvrc_s->delay_prev_index = index_move(p_dvrc_s->delay_prev_index, 1);
 
-    // When in openloop, only phase_buffer and phase_index is updated.
+    // When in openloop, phase_buffer and index is updated.
     if(!flag_start_calc){
         return steps_delay ;
     }else{

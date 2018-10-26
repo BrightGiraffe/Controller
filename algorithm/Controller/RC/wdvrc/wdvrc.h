@@ -4,11 +4,23 @@
 #include "../../filter/filter.h"
 #include "math.h"
 
+#define USE_TEN_KHZ 1
+#define USE_TWENTY_KHZ 0
+
+#if USE_TEN_KHZ
+#define SLICE_ANGLE 0.0314159265359
+#define MAX_STEPS_FOR_BUFFER 205
+#define MIN_STEPS_FOR_BUFFER 196
+#define STEPS_AT_BASE_FREQ 200
+#endif
+#if USE_TWENTY_KHZ
+#define SLICE_ANGLE 0.01570796326795
 #define MAX_STEPS_FOR_BUFFER 410
 #define MIN_STEPS_FOR_BUFFER 392
 #define STEPS_AT_BASE_FREQ 400
+#endif
 
-#define SLICE_ANGLE 0.01570796326795
+
 #define DOUBLE_PI_DVRC 6.28318530718
 #define PI_DVRC 3.14159265359
 
