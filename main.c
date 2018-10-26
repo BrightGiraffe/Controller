@@ -23,6 +23,7 @@ dvrc_struct * p_wdvrc = & wdvrc ;
 filter_s low_pass_filter ;
 filter_s * p_low_pass_filter = & low_pass_filter ;
 
+float test ;
 /***********************************************************************************************************************
                                                          * main
  **********************************************************************************************************************/
@@ -65,6 +66,7 @@ int main(void)
 
     float phase = 0.0f ;
     float pi_output = 0.0f ;
+    control_modulation = 0.0 ;
 
     init_pll_sogi(&s_pll_sogi_gird, KP_PLL, KI_PLL, TS_PLL_TWENTY_KHZ) ; // InitPLL();
 
@@ -85,7 +87,7 @@ int main(void)
             flag_timer2_updated = 0 ;
             debug_scope_count ++ ;
             debug_scope_count %= 400 ;
-            debug_scope_1[debug_scope_count] =  MeasureBuf[CH_DC_BUS] ;
+            debug_scope_1[debug_scope_count] =  MeasureBuf[CH_GRID_CURRENT] ;
 
             if( ErrorDetected() ){
                 Shutdown_PWM_RELAY();
@@ -117,9 +119,11 @@ int main(void)
                 error_rc_input = pid_ig.reference - MeasureBuf[CH_GRID_CURRENT] ;
                 // SCOPE_PU ;
                 // Real repetitive controller
-                // rc_output = calc_wdvrc(p_wdvrc, phase, error_rc_input, 1);
+                test = calc_wdvrc(p_wdvrc, phase, error_rc_input, 1);
+                rc_output = 0.0 ;
+
                 // Simulate repetitive controller
-                rc_output = calc_wdvrc(p_wdvrc, phase, 0.001 * sinf(phase), 1);
+                //rc_output = calc_wdvrc(p_wdvrc, phase, 0.001 * sinf(phase), 1);
                 // SCOPE_PD ;
                 //debug_scope_1[debug_scope_count] = rc_output ;
                 // rc_output = 0.0 ;
@@ -129,16 +133,15 @@ int main(void)
                 // Read time damping is used to reduce delay ;
                 control_modulation = pi_output // PI controller
                         + MeasureBuf[CH_AC_VOLTAGE] * K_FEEDFORWARD; // PCC voltage feedforward
-                // rc_output = 0.0 ;
 
             }else if(g_inv_state != ErrorEncountered){
-                calc_wdvrc(p_wdvrc, phase, 0, 0) ;
+                //calc_wdvrc(p_wdvrc, phase, 0, 0) ;
             }
 
             // KEY
             if(KEY_CLOSELOOP_CONTROL_ENABLED && (g_inv_state != ErrorEncountered )){
                 // Ensure connecting to the grid when the grid voltage is low ;
-                if( fabs(phase - 1.02) < 0.02f){
+                if( fabs(phase - 1.02) < 0.03f){
                     g_inv_state = CurrentControlledPreparation ;
                 }
             }
@@ -163,7 +166,7 @@ int main(void)
                     g_inv_state = CurrentControlled ;
                 }
                 // when the current is larger than 0.1A
-                else if( fabs(MeasureBuf[CH_GRID_CURRENT]) > 0.15){
+                else if( fabs(MeasureBuf[CH_GRID_CURRENT]) > 0.2){
                     g_inv_state = CurrentControlled ;
                 }
             }
@@ -179,7 +182,14 @@ int main(void)
 //                debug_scope_1[debug_scope_count] = -1.0 ;
 //            }
             if(g_inv_state != ErrorEncountered){
-                StoreVoltage(0, 2 + sinf(phase) , ADDR_DAC8554, 1);
+                switch(g_inv_state){
+                case CurrentControlled:
+                    // StoreVoltage(0, 2.5 + 0.001 * rc_output , ADDR_DAC8554, 1);
+                    StoreVoltage(0, 2.5 + 0.001 * test , ADDR_DAC8554, 1);
+                    break ;
+                default :
+                    StoreVoltage(0, 2.5 + 0.2 * pid_ig.reference , ADDR_DAC8554, 1);
+                }
                 //StoreVoltage(0, 2 + 0.5 * rc_output , ADDR_DAC8554, 1);
             // StoreVoltage(1,  2 + 2 * debug_scope_1[debug_scope_count] , ADDR_DAC8554, 1);
             }

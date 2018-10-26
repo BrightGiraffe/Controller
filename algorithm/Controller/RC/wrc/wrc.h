@@ -6,7 +6,7 @@
 #define MAX_NUMBER_SAMPLES_PERIOD 205 
 #define SAMPLES_PER_SECOND 1e4f
 
-#define SIMULINK_DEBUG 1 
+#define SIMULINK_DEBUG 0
 
 typedef struct wrc_structure{
     double rc_input_buffer[MAX_NUMBER_SAMPLES_PERIOD] ;

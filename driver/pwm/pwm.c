@@ -35,8 +35,13 @@ interrupt void epwm1_timer_isr(void) // 7500
 
     AD7606_XINTF_Read_All();
     damping = C_CTRL_KD * MeasureBuf[CH_CAP_CURRENT];
-    control_modulation = - control_modulation - damping ;
-    vm = control_modulation / MeasureBuf[CH_DC_BUS] ;
+    control_modulation = control_modulation - damping ;
+    vm = - control_modulation / MeasureBuf[CH_DC_BUS] ;
+    if(vm > 0.95){
+        vm = 0.95 ;
+    }else if (vm < -0.95){
+        vm = -0.95 ;
+    }
     CMP =  CarrierAmplitude + CarrierAmplitude *  vm ;
 
     if(CMP > MODULATION_UPPER_THRESHOLD_UINT){
@@ -65,8 +70,13 @@ interrupt void epwm2_timer_isr(void) // 0
 
     AD7606_XINTF_Read_All();
     damping = C_CTRL_KD * MeasureBuf[CH_CAP_CURRENT];
-    control_modulation = - control_modulation - damping ;
-    vm = control_modulation / MeasureBuf[CH_DC_BUS] ;
+    control_modulation = control_modulation - damping ;
+    vm = - control_modulation / MeasureBuf[CH_DC_BUS] ;
+    if(vm > 0.95){
+        vm = 0.95 ;
+    }else if (vm < -0.95){
+        vm = -0.95 ;
+    }
     CMP =  CarrierAmplitude + CarrierAmplitude *  vm ;
 
     if(CMP > MODULATION_UPPER_THRESHOLD_UINT){
@@ -111,8 +121,8 @@ void PWM_Init(int freq)
     EPwm1Regs.TBCTL.bit.PRDLD = CC_SHADOW;
     EPwm1Regs.TBCTL.bit.SYNCOSEL = TB_CTR_ZERO;
 
-    EPwm1Regs.CMPCTL.bit.SHDWAMODE = CC_SHADOW; // Load immediately
-    EPwm1Regs.CMPCTL.bit.SHDWBMODE = CC_SHADOW; // Load immediately
+    EPwm1Regs.CMPCTL.bit.SHDWAMODE = CC_SHADOW;
+    EPwm1Regs.CMPCTL.bit.SHDWBMODE = CC_SHADOW;
     EPwm1Regs.CMPCTL.bit.LOADAMODE = CC_CTR_ZERO_PRD; //CC_CTR_ZERO
     EPwm1Regs.CMPCTL.bit.LOADBMODE = CC_CTR_ZERO_PRD;
 
@@ -123,7 +133,7 @@ void PWM_Init(int freq)
     EPwm1Regs.AQCTLA.bit.CBU = AQ_CLEAR ;
     EPwm1Regs.AQCTLA.bit.CBD = AQ_SET ;
 
-    EPwm1Regs.DBCTL.bit.OUT_MODE= DB_DISABLE;
+    EPwm1Regs.DBCTL.bit.OUT_MODE= DB_FULL_ENABLE;
     EPwm1Regs.DBCTL.bit.POLSEL=DB_ACTV_HIC;
     EPwm1Regs.DBFED=0;
     EPwm1Regs.DBRED=0;
@@ -145,8 +155,8 @@ void PWM_Init(int freq)
     EPwm2Regs.TBCTL.bit.PRDLD = CC_SHADOW ;
     EPwm2Regs.TBCTL.bit.SYNCOSEL = TB_SYNC_IN ;
 
-    EPwm2Regs.CMPCTL.bit.SHDWAMODE = CC_SHADOW; // Load immediately
-    EPwm2Regs.CMPCTL.bit.SHDWBMODE = CC_SHADOW; // Load immediately
+    EPwm2Regs.CMPCTL.bit.SHDWAMODE = CC_SHADOW;
+    EPwm2Regs.CMPCTL.bit.SHDWBMODE = CC_SHADOW;
     EPwm2Regs.CMPCTL.bit.LOADAMODE = CC_CTR_ZERO_PRD ; // CC_CTR_ZERO_PRD ; // Load on Zero
     EPwm2Regs.CMPCTL.bit.LOADBMODE = CC_CTR_ZERO_PRD ;
 
@@ -157,7 +167,7 @@ void PWM_Init(int freq)
     EPwm2Regs.AQCTLA.bit.CBU = AQ_SET ;
     EPwm2Regs.AQCTLA.bit.CBD = AQ_CLEAR ;
 
-    EPwm2Regs.DBCTL.bit.OUT_MODE= DB_DISABLE;
+    EPwm2Regs.DBCTL.bit.OUT_MODE= DB_FULL_ENABLE;
     EPwm2Regs.DBCTL.bit.POLSEL= DB_ACTV_HIC;
     EPwm2Regs.DBFED=0;
     EPwm2Regs.DBRED=0;

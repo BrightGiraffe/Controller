@@ -15,7 +15,7 @@
 
 #define KP_PLL 0.1
 #define KI_PLL 1.0
-#define TS_PLL_TEN_KHZ 1e-4
+// #define TS_PLL_TEN_KHZ 1e-4
 #define TS_PLL_TWENTY_KHZ 5e-5
 
 #define K_FEEDFORWARD 0.95
@@ -27,15 +27,15 @@
 // L1 = 3.87 mH,
 // C = 10 uF
 // L2 = 2.2 mH
-#define C_CTRL_KP 15.0f
+#define C_CTRL_KP 20.0f
 #define C_CTRL_KI 15000.0f
-#define C_CTRL_KD 12.0f
+#define C_CTRL_KD 25.0f
 
 // #define V_CTRL_KP 0.02f
 // #define V_CTRL_KI 60.0f
 
-#define RC_LEAD_STEPS 7
-#define RC_Q_COEFF 0.95
+#define RC_LEAD_STEPS 11
+#define RC_Q_COEFF 0.9
 #define RC_K_RC 0.8
 
 extern const float num_filter[3] ;
