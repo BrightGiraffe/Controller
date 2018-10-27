@@ -29,14 +29,14 @@
 // L2 = 2.2 mH
 #define C_CTRL_KP 15.0f
 #define C_CTRL_KI 15000.0f
-#define C_CTRL_KD 20.0f
+#define C_CTRL_KD 15.0f
 
 // #define V_CTRL_KP 0.02f
 // #define V_CTRL_KI 60.0f
 
 #define RC_LEAD_STEPS 7
 #define RC_Q_COEFF 0.9
-#define RC_K_RC 0.1
+#define RC_K_RC 0.2
 
 extern const float num_filter[3] ;
 extern const float den_filter[3] ;

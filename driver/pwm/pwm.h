@@ -17,6 +17,8 @@
 #define MODULATION_UPPER_THRESHOLD_UINT 7350u
 #define MODULATION_LOWER_THRESHOLD_UINT 150u
 
+#define UNIPOLAR_MODULATION 1
+
 void PWM_Init(int freq);
 
 #endif /* PWM_PWM_H_ */

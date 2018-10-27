@@ -120,8 +120,8 @@ int main(void)
                 error_rc_input = pid_ig.reference - MeasureBuf[CH_GRID_CURRENT] ;
                 // SCOPE_PU ;
                 // Real repetitive controller
-                rc_output = calc_wdvrc(p_wdvrc, phase, error_rc_input , 1);
-                // rc_output = 0.0 ;
+                //rc_output = calc_wdvrc(p_wdvrc, phase, error_rc_input , 1);
+                rc_output = 0.0 ;
 
                 // Simulate repetitive controller
                 //rc_output = calc_wdvrc(p_wdvrc, phase, 0.001 * sinf(phase), 1);
@@ -160,14 +160,14 @@ int main(void)
                 RELAY_2_CLOSEUP ;
 
                 // near the zero crossing point
-                if( phase < 0.06){
+                if( phase < 0.1){
                     g_inv_state = CurrentControlled ;
                 }
-                else if( fabs(phase - 3.1415926) < 0.05 ){
+                else if( fabs(phase - 3.1415926) < 0.1 ){
                     g_inv_state = CurrentControlled ;
                 }
                 // when the current is larger than 0.1A
-                else if( fabs(MeasureBuf[CH_GRID_CURRENT]) > 0.2){
+                else if( fabs(MeasureBuf[CH_GRID_CURRENT]) > 0.15){
                     g_inv_state = CurrentControlled ;
                 }
             }
@@ -186,7 +186,7 @@ int main(void)
                 switch(g_inv_state){
                 case CurrentControlled:
                     // StoreVoltage(0, 2.5 + 0.001 * rc_output , ADDR_DAC8554, 1);
-                    StoreVoltage(0, 2.5 + 0.001 * rc_output , ADDR_DAC8554, 1);
+                    StoreVoltage(0, 2.5 + 0.0001 * rc_output , ADDR_DAC8554, 1);
                     break ;
                 default :
                     StoreVoltage(0, 2.5 + 0.2 * pid_ig.reference , ADDR_DAC8554, 1);
