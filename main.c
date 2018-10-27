@@ -68,7 +68,8 @@ int main(void)
     float pi_output = 0.0f ;
     control_modulation = 0.0 ;
 
-    init_pll_sogi(&s_pll_sogi_gird, KP_PLL, KI_PLL, TS_PLL_TWENTY_KHZ) ; // InitPLL();
+    //TS_PLL_TWENTY_KHZ
+    init_pll_sogi(&s_pll_sogi_gird, KP_PLL, KI_PLL, TS_PLL_TEN_KHZ) ; // InitPLL();
 
     filter_init(p_low_pass_filter, num_filter, den_filter, order_filter ) ;
 
@@ -119,8 +120,8 @@ int main(void)
                 error_rc_input = pid_ig.reference - MeasureBuf[CH_GRID_CURRENT] ;
                 // SCOPE_PU ;
                 // Real repetitive controller
-                test = calc_wdvrc(p_wdvrc, phase, error_rc_input, 1);
-                rc_output = 0.0 ;
+                rc_output = calc_wdvrc(p_wdvrc, phase, error_rc_input , 1);
+                // rc_output = 0.0 ;
 
                 // Simulate repetitive controller
                 //rc_output = calc_wdvrc(p_wdvrc, phase, 0.001 * sinf(phase), 1);
@@ -135,7 +136,7 @@ int main(void)
                         + MeasureBuf[CH_AC_VOLTAGE] * K_FEEDFORWARD; // PCC voltage feedforward
 
             }else if(g_inv_state != ErrorEncountered){
-                //calc_wdvrc(p_wdvrc, phase, 0, 0) ;
+                calc_wdvrc(p_wdvrc, phase, 0, 0) ;
             }
 
             // KEY
@@ -185,7 +186,7 @@ int main(void)
                 switch(g_inv_state){
                 case CurrentControlled:
                     // StoreVoltage(0, 2.5 + 0.001 * rc_output , ADDR_DAC8554, 1);
-                    StoreVoltage(0, 2.5 + 0.001 * test , ADDR_DAC8554, 1);
+                    StoreVoltage(0, 2.5 + 0.001 * rc_output , ADDR_DAC8554, 1);
                     break ;
                 default :
                     StoreVoltage(0, 2.5 + 0.2 * pid_ig.reference , ADDR_DAC8554, 1);
