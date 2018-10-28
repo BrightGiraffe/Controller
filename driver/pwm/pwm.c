@@ -63,7 +63,7 @@ interrupt void epwm1_timer_isr(void) // 7500
     SCOPE_PD ;
     /***** 7.1us:END *****/
 
-    //flag_timer2_updated = 1 ;
+    flag_timer2_updated = 1 ;
     AD7606_PostSampleDo();
 
     EPwm1Regs.ETCLR.bit.INT=1;

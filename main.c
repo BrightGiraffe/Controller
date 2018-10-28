@@ -69,7 +69,7 @@ int main(void)
     control_modulation = 0.0 ;
 
     //TS_PLL_TWENTY_KHZ
-    init_pll_sogi(&s_pll_sogi_gird, KP_PLL, KI_PLL, TS_PLL_TEN_KHZ) ; // InitPLL();
+    init_pll_sogi(&s_pll_sogi_gird, KP_PLL, KI_PLL, TS_PLL_TWENTY_KHZ) ; // InitPLL();
 
     filter_init(p_low_pass_filter, num_filter, den_filter, order_filter ) ;
 
@@ -120,8 +120,8 @@ int main(void)
                 error_rc_input = pid_ig.reference - MeasureBuf[CH_GRID_CURRENT] ;
                 // SCOPE_PU ;
                 // Real repetitive controller
-                //rc_output = calc_wdvrc(p_wdvrc, phase, error_rc_input , 1);
-                rc_output = 0.0 ;
+                rc_output = calc_wdvrc(p_wdvrc, phase, error_rc_input , 1);
+                //rc_output = 0.0 ;
 
                 // Simulate repetitive controller
                 //rc_output = calc_wdvrc(p_wdvrc, phase, 0.001 * sinf(phase), 1);

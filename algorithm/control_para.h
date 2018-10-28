@@ -34,9 +34,9 @@
 // #define V_CTRL_KP 0.02f
 // #define V_CTRL_KI 60.0f
 
-#define RC_LEAD_STEPS 7
+#define RC_LEAD_STEPS 12
 #define RC_Q_COEFF 0.9
-#define RC_K_RC 0.2
+#define RC_K_RC 0.1
 
 extern const float num_filter[3] ;
 extern const float den_filter[3] ;

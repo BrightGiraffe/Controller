@@ -4,8 +4,8 @@
 #include "../../filter/filter.h"
 #include "math.h"
 
-#define USE_TEN_KHZ 1
-#define USE_TWENTY_KHZ 0
+#define USE_TEN_KHZ 0
+#define USE_TWENTY_KHZ 1
 
 #if USE_TEN_KHZ
 #define SLICE_ANGLE 0.0314159265359
