@@ -98,6 +98,13 @@ SECTIONS
    	.ebss           : > RAML45       	PAGE = 1
    	.esysmem        : > RAMM1       	PAGE = 1
 
+   	ramfuncs		: LOAD = FLASHC, PAGE = 0
+   					  RUN = RAM_L0L1L2L3, PAGE = 0
+   					  LOAD_START(_ramfuncs_loadstart),
+   					  RUN_START(_ramfuncs_runstart),
+   					  SIZE(_ramfuncs_size)
+
+
 /*** Initialized Sections ***/                                          
   	.cinit			:	LOAD = FLASHC,		PAGE = 0        /* can be ROM */
                 		RUN = RAM_L0L1L2L3, PAGE = 0   		/* must be CSM secured RAM */

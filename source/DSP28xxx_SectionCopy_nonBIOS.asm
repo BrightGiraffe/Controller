@@ -23,6 +23,7 @@
 	.global _pinit_loadstart, _pinit_runstart, _pinit_size
 	.global _switch_loadstart, _switch_runstart, _switch_size
 	.global _text_loadstart, _text_runstart, _text_size
+	.global _ramfuncs_loadstart, _ramfuncs_runstart, _ramfuncs_size
 
 	; IQmath is not suitable for section copy
 	; .global _iqmath_loadstart, _iqmath_runstart, _iqmath_size
@@ -72,6 +73,12 @@ copy_sections:
  	MOVL XAR6,#_cinit_loadstart			; Store Load Starting Address in XAR6 
     MOVL XAR7,#_cinit_runstart			; Store Run Address in XAR7       
     LCR  copy							; Branch to Copy                                                                                                                                                      
+
+ 	MOVL XAR5,#_ramfuncs_size				; Store Section Size in XAR5
+ 	MOVL ACC,@XAR5						; Move Section Size to ACC
+ 	MOVL XAR6,#_ramfuncs_loadstart			; Store Load Starting Address in XAR6
+    MOVL XAR7,#_ramfuncs_runstart			; Store Run Address in XAR7
+    LCR  copy							; Branch to Copy
 
     LB _c_int00				 			; Branch to start of boot.asm in RTS library
 

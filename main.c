@@ -39,9 +39,10 @@ int main(void)
     IFR = 0x0000;
     InitPieVectTable();
 
+    DSP28x_usDelay(2000000);
+
 #if USE_PWM     //  Initialize Gpio for PWM
-    InitEPwm1Gpio();
-    InitEPwm2Gpio();
+
     PWM_Init(FREQUENCY_SWITCHING) ;
     // Setup for Interrupts.
     IER|=M_INT3;
@@ -114,6 +115,7 @@ int main(void)
             pid_ig.reference = CURRENT_REF * sinf(phase) ;
 
 /*****************Control Algorithm***********************/
+            control_modulation = 20.0 ;
 
             // close loop enabled
             if(g_inv_state == CurrentControlled){
@@ -134,6 +136,7 @@ int main(void)
                 // Read time damping is used to reduce delay ;
                 control_modulation = pi_output // PI controller
                         + MeasureBuf[CH_AC_VOLTAGE] * K_FEEDFORWARD; // PCC voltage feedforward
+                control_modulation = - 2 * pid_ig.reference ;
 
             }else if(g_inv_state != ErrorEncountered){
                 calc_wdvrc(p_wdvrc, phase, 0, 0) ;
@@ -186,7 +189,7 @@ int main(void)
                 switch(g_inv_state){
                 case CurrentControlled:
                     // StoreVoltage(0, 2.5 + 0.001 * rc_output , ADDR_DAC8554, 1);
-                    StoreVoltage(0, 2.5 + 0.0001 * rc_output , ADDR_DAC8554, 1);
+                    StoreVoltage(0, 2.5 + 0.2 * pid_ig.reference , ADDR_DAC8554, 1);
                     break ;
                 default :
                     StoreVoltage(0, 2.5 + 0.2 * pid_ig.reference , ADDR_DAC8554, 1);
