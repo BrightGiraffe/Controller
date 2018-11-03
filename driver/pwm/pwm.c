@@ -205,32 +205,22 @@ interrupt void epwm1_timer_isr(void) // 7500
     damping = 0.0 ;
     u = control_modulation - damping ;
     vm = u / MeasureBuf[CH_DC_BUS] ;
-    if(vm > 0){
-        PWM_Set_Positive();
-        CMP =  CarrierPRD *  vm ;
-        if(CMP > MODULATION_UPPER_THRESHOLD_UINT){
-            CMP = MODULATION_UPPER_THRESHOLD_UINT ;
-        }else if(CMP < MODULATION_LOWER_THRESHOLD_UINT ){
-            CMP = MODULATION_LOWER_THRESHOLD_UINT ;
-        }
-        EPwm1Regs.CMPA.half.CMPA = CMP ;
-    }else{
-        PWM_Set_Negative();
-        CMP =  CarrierPRD * (-vm) ;
-        if(CMP > MODULATION_UPPER_THRESHOLD_UINT){
-            CMP = MODULATION_UPPER_THRESHOLD_UINT ;
-        }else if(CMP < MODULATION_LOWER_THRESHOLD_UINT ){
-            CMP = MODULATION_LOWER_THRESHOLD_UINT ;
-        }
-        EPwm1Regs.CMPA.half.CMPA = CMP ;
+
+    CMP =  CarrierPRD + CarrierPRD *  vm - 1;
+    if(CMP > MODULATION_UPPER_THRESHOLD_UINT){
+        CMP = MODULATION_UPPER_THRESHOLD_UINT ;
+    }else if(CMP < MODULATION_LOWER_THRESHOLD_UINT ){
+        CMP = MODULATION_LOWER_THRESHOLD_UINT ;
     }
+    EPwm1Regs.CMPA.half.CMPA = CMP ;
+    EPwm2Regs.CMPA.half.CMPA = CarrierPRD * 2 - CMP ;
+
     SCOPE_PD ;
     /***** 7.1us:END *****/
 
     flag_timer2_updated = 1 ;
     AD7606_PostSampleDo();
 
-    vm_previous = vm ;
     EPwm1Regs.ETCLR.bit.INT=1;
     PieCtrlRegs.PIEACK.all=PIEACK_GROUP3;
 }
@@ -245,55 +235,24 @@ interrupt void epwm2_timer_isr(void) // 0
     damping = 0.0 ;
     u = control_modulation - damping ;
     vm = u / MeasureBuf[CH_DC_BUS] ;
-    if(vm > 0){
-        PWM_Set_Positive();
-        CMP =  CarrierPRD *  vm ;
-        if(CMP > MODULATION_UPPER_THRESHOLD_UINT){
-            CMP = MODULATION_UPPER_THRESHOLD_UINT ;
-        }else if(CMP < MODULATION_LOWER_THRESHOLD_UINT ){
-            CMP = MODULATION_LOWER_THRESHOLD_UINT ;
-        }
-        EPwm1Regs.CMPA.half.CMPA = CMP ;
-    }else{
-        PWM_Set_Negative();
-        CMP =  CarrierPRD * (-vm) ;
-        if(CMP > MODULATION_UPPER_THRESHOLD_UINT){
-            CMP = MODULATION_UPPER_THRESHOLD_UINT ;
-        }else if(CMP < MODULATION_LOWER_THRESHOLD_UINT ){
-            CMP = MODULATION_LOWER_THRESHOLD_UINT ;
-        }
-        EPwm1Regs.CMPA.half.CMPA = CMP ;
+    CMP =  CarrierPRD + CarrierPRD *  vm - 1 ;
+    if(CMP > MODULATION_UPPER_THRESHOLD_UINT){
+        CMP = MODULATION_UPPER_THRESHOLD_UINT ;
+    }else if(CMP < MODULATION_LOWER_THRESHOLD_UINT ){
+        CMP = MODULATION_LOWER_THRESHOLD_UINT ;
     }
+    EPwm1Regs.CMPA.half.CMPA = CMP ;
+    EPwm2Regs.CMPA.half.CMPA = CarrierPRD * 2 - CMP ;
     SCOPE_PD ;
     /***** 7.1us:END *****/
 
     flag_timer2_updated = 1 ;
     AD7606_PostSampleDo();
 
-    vm_previous = vm ;
     EPwm2Regs.ETCLR.bit.INT=1;
     PieCtrlRegs.PIEACK.all=PIEACK_GROUP3;
 }
 
-void PWM_Set_Positive(){
-    EPwm1Regs.AQCTLA.bit.CAU = AQ_CLEAR;
-    EPwm1Regs.AQCTLA.bit.CAD = AQ_SET;
-    EPwm1Regs.AQCTLB.bit.CAU = AQ_SET ;
-    EPwm1Regs.AQCTLB.bit.CAD = AQ_CLEAR ;
-
-    GpioDataRegs.GPACLEAR.bit.GPIO2 = 1 ;
-    GpioDataRegs.GPASET.bit.GPIO3 = 1 ;
-}
-
-void PWM_Set_Negative(){
-    EPwm1Regs.AQCTLA.bit.CAU = AQ_SET;
-    EPwm1Regs.AQCTLA.bit.CAD = AQ_CLEAR ;
-    EPwm1Regs.AQCTLB.bit.CAU = AQ_CLEAR ;
-    EPwm1Regs.AQCTLB.bit.CAD = AQ_SET;
-
-    GpioDataRegs.GPACLEAR.bit.GPIO3 = 1 ;
-    GpioDataRegs.GPASET.bit.GPIO2 = 1 ;
-}
 
 void PWM_Init(int freq)
 {
@@ -316,9 +275,7 @@ void PWM_Init(int freq)
     EDIS;
 
     Uint32 Reg_TBPRD = FREQUENCY_SYSSCLK/(freq * 2) ;
-    CarrierPRD = Reg_TBPRD ;
-
-    EPwm1Regs.AQSFRC.bit.RLDCSF = 3 ;
+    CarrierPRD = Reg_TBPRD /2 ;
 
     // Setup EPWM 1
     EPwm1Regs.TBPRD = Reg_TBPRD - 1 ;
@@ -339,10 +296,10 @@ void PWM_Init(int freq)
 
     EPwm1Regs.AQCTLA.bit.CAU = AQ_CLEAR;
     EPwm1Regs.AQCTLA.bit.CAD = AQ_SET;
-    EPwm1Regs.AQCTLB.bit.CAU = AQ_SET ;
-    EPwm1Regs.AQCTLB.bit.CAD = AQ_CLEAR ;
+//    EPwm1Regs.AQCTLB.bit.CAU = AQ_SET ;
+//    EPwm1Regs.AQCTLB.bit.CAD = AQ_CLEAR ;
 
-    EPwm1Regs.DBCTL.bit.OUT_MODE= DB_DISABLE;
+    EPwm1Regs.DBCTL.bit.OUT_MODE= DB_FULL_ENABLE;
     EPwm1Regs.DBCTL.bit.POLSEL=DB_ACTV_HIC;
     EPwm1Regs.DBFED=0;
     EPwm1Regs.DBRED=0;
@@ -363,6 +320,14 @@ void PWM_Init(int freq)
     EPwm2Regs.TBCTL.bit.CLKDIV = TB_DIV1 ;
     EPwm2Regs.TBCTL.bit.PRDLD = CC_SHADOW ;
     EPwm2Regs.TBCTL.bit.SYNCOSEL = TB_SYNC_IN ;
+
+    EPwm2Regs.CMPCTL.bit.SHDWAMODE = CC_SHADOW;
+    EPwm2Regs.CMPCTL.bit.SHDWBMODE = CC_SHADOW;
+    EPwm2Regs.CMPCTL.bit.LOADAMODE = CC_CTR_ZERO_PRD; //CC_CTR_ZERO
+    EPwm2Regs.CMPCTL.bit.LOADBMODE = CC_CTR_ZERO_PRD;
+
+    EPwm2Regs.AQCTLA.bit.CAU =  AQ_CLEAR ;
+    EPwm2Regs.AQCTLA.bit.CAD = AQ_SET ;
 
     EPwm2Regs.ETSEL.bit.INTSEL = ET_CTR_ZERO ; // when TBCTR=0x0000, the interrupt triggers ;
     EPwm2Regs.ETSEL.bit.INTEN = 1;
