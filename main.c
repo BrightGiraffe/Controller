@@ -115,8 +115,6 @@ int main(void)
             pid_ig.reference = CURRENT_REF * sinf(phase) ;
 
 /*****************Control Algorithm***********************/
-            control_modulation = 20.0 ;
-
             // close loop enabled
             if(g_inv_state == CurrentControlled){
                 error_rc_input = pid_ig.reference - MeasureBuf[CH_GRID_CURRENT] ;
@@ -136,8 +134,6 @@ int main(void)
                 // Read time damping is used to reduce delay ;
                 control_modulation = pi_output // PI controller
                         + MeasureBuf[CH_AC_VOLTAGE] * K_FEEDFORWARD; // PCC voltage feedforward
-                control_modulation = - 2 * pid_ig.reference ;
-
             }else if(g_inv_state != ErrorEncountered){
                 calc_wdvrc(p_wdvrc, phase, 0, 0) ;
             }

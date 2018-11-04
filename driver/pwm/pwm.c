@@ -202,7 +202,6 @@ interrupt void epwm1_timer_isr(void) // 7500
 
     AD7606_XINTF_Read_All();
     damping = C_CTRL_KD * MeasureBuf[CH_CAP_CURRENT];
-    damping = 0.0 ;
     u = control_modulation - damping ;
     vm = u / MeasureBuf[CH_DC_BUS] ;
 
@@ -232,7 +231,6 @@ interrupt void epwm2_timer_isr(void) // 0
 
     AD7606_XINTF_Read_All();
     damping = C_CTRL_KD * MeasureBuf[CH_CAP_CURRENT];
-    damping = 0.0 ;
     u = control_modulation - damping ;
     vm = u / MeasureBuf[CH_DC_BUS] ;
     CMP =  CarrierPRD + CarrierPRD *  vm - 1 ;
@@ -257,17 +255,7 @@ interrupt void epwm2_timer_isr(void) // 0
 void PWM_Init(int freq)
 {
     InitEPwm1Gpio();
-
-    EALLOW;
-    GpioCtrlRegs.GPAPUD.bit.GPIO2 = 0;    // Enable pull-up on GPIO2
-    GpioCtrlRegs.GPAPUD.bit.GPIO3 = 0;    // Enable pull-up on GPIO3
-
-    GpioCtrlRegs.GPADIR.bit.GPIO2 = 1 ;
-    GpioCtrlRegs.GPADIR.bit.GPIO3 = 1 ;
-
-    GpioCtrlRegs.GPAMUX1.bit.GPIO2 = 0 ;   // Common function
-    GpioCtrlRegs.GPAMUX1.bit.GPIO3 = 0 ;   // Common function
-    EDIS;
+    InitEPwm2Gpio();
 
     // Clear TBCLKSYNC before setup EPwm ;
     EALLOW;
@@ -328,6 +316,11 @@ void PWM_Init(int freq)
 
     EPwm2Regs.AQCTLA.bit.CAU =  AQ_CLEAR ;
     EPwm2Regs.AQCTLA.bit.CAD = AQ_SET ;
+
+    EPwm2Regs.DBCTL.bit.OUT_MODE= DB_FULL_ENABLE;
+    EPwm2Regs.DBCTL.bit.POLSEL=DB_ACTV_HIC;
+    EPwm2Regs.DBFED=0;
+    EPwm2Regs.DBRED=0;
 
     EPwm2Regs.ETSEL.bit.INTSEL = ET_CTR_ZERO ; // when TBCTR=0x0000, the interrupt triggers ;
     EPwm2Regs.ETSEL.bit.INTEN = 1;
