@@ -41,8 +41,8 @@ int main(void)
 
 #if USE_PWM     //  Initialize Gpio for PWM
 
-    // PWM_Init(FREQUENCY_SWITCHING) ;
-    PWM_Init(9875) ;
+    PWM_Init(FREQUENCY_SWITCHING) ;
+    // PWM_Init(9875) ;
     //PWM_Init(10125) ;
     // Setup for Interrupts.
     IER|=M_INT3;
@@ -120,8 +120,8 @@ int main(void)
                 error_rc_input = pid_ig.reference - MeasureBuf[CH_GRID_CURRENT] ;
                 // SCOPE_PU ;
                 // Real repetitive controller
-                rc_output = calc_wdvrc(p_wdvrc, phase, error_rc_input , 1);
-                //rc_output = 0.0 ;
+                //rc_output = calc_wdvrc(p_wdvrc, phase, error_rc_input , 1);
+                rc_output = 0.0 ;
 
                 // Simulate repetitive controller
                 //rc_output = calc_wdvrc(p_wdvrc, phase, 0.001 * sinf(phase), 1);
@@ -135,7 +135,7 @@ int main(void)
                 control_modulation = pi_output // PI controller
                         + MeasureBuf[CH_AC_VOLTAGE] * K_FEEDFORWARD; // PCC voltage feedforward
             }else if(g_inv_state != ErrorEncountered){
-                calc_wdvrc(p_wdvrc, phase, 0, 0) ;
+                //calc_wdvrc(p_wdvrc, phase, 0, 0) ;
             }
 
             // KEY
