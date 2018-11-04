@@ -39,11 +39,11 @@ int main(void)
     IFR = 0x0000;
     InitPieVectTable();
 
-    DSP28x_usDelay(2000000);
-
 #if USE_PWM     //  Initialize Gpio for PWM
 
-    PWM_Init(FREQUENCY_SWITCHING) ;
+    // PWM_Init(FREQUENCY_SWITCHING) ;
+    PWM_Init(9875) ;
+    //PWM_Init(10125) ;
     // Setup for Interrupts.
     IER|=M_INT3;
     PieCtrlRegs.PIEIER3.bit.INTx1=1;
@@ -184,8 +184,8 @@ int main(void)
             if(g_inv_state != ErrorEncountered){
                 switch(g_inv_state){
                 case CurrentControlled:
-                    // StoreVoltage(0, 2.5 + 0.001 * rc_output , ADDR_DAC8554, 1);
-                    StoreVoltage(0, 2.5 + 0.2 * pid_ig.reference , ADDR_DAC8554, 1);
+                    StoreVoltage(0, 2.5 + 0.001 * rc_output , ADDR_DAC8554, 1);
+                    //StoreVoltage(0, 2.5 + 0.2 * pid_ig.reference , ADDR_DAC8554, 1);
                     break ;
                 default :
                     StoreVoltage(0, 2.5 + 0.2 * pid_ig.reference , ADDR_DAC8554, 1);

@@ -192,9 +192,6 @@ void PWM_Init(int freq)
 #else
 
 #if UNIPOLAR_MODULATION_2
-
-float vm_previous =0.00000 ;
-
 interrupt void epwm1_timer_isr(void) // 7500
 {
     /***** 7.1us:START *****/

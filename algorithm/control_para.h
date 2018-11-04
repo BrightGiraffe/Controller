@@ -27,9 +27,9 @@
 // L1 = 3.87 mH,
 // C = 10 uF
 // L2 = 2.2 mH
-#define C_CTRL_KP 15.0f
+#define C_CTRL_KP 20.0f
 #define C_CTRL_KI 15000.0f
-#define C_CTRL_KD 15.0f
+#define C_CTRL_KD 25.0f
 
 // #define V_CTRL_KP 0.02f
 // #define V_CTRL_KI 60.0f
