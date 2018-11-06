@@ -8,9 +8,9 @@
 
 #include "algorithm/Controller/PI/pid.h"
 #include "algorithm/Controller/PR/pr.h"
-#include "algorithm/Controller/RC/wdvrc/wdvrc.h"
 #include "algorithm/PLL/pll_sogi.h"
 #include "algorithm/control_para.h"
+#include "algorithm/Controller/RC/crc/crc.h"
 #include "driver/ad7606/ad7606.h"
 
 #include "math.h"
