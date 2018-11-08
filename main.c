@@ -9,6 +9,9 @@
 float rc_output = 0.0 ;
 float error_rc_input ;
 float error_pi_input ;
+float phase = 0.0f ;
+float pi_output = 0.0f ;
+
 float debug_scope_1[400] ;
 Uint16 debug_scope_count = 0 ;
 
@@ -17,13 +20,24 @@ float control_modulation = 0.0f ;
 pll_sogi_s s_pll_sogi_gird ;
 pidStruct pid_ig ;
 
-dvrc_struct wdvrc ;
-dvrc_struct * p_wdvrc = & wdvrc ;
+crc_struct crc ;
+crc_struct * p_crc = & crc ;
 
 filter_s low_pass_filter ;
 filter_s * p_low_pass_filter = & low_pass_filter ;
 
 float test ;
+enum InverterOutputState g_inv_state = InitialState ;
+
+void Delay(void){
+    unsigned int i, j = 0 ;
+    for(i = 0; i < 65535 ; i ++){
+        for(j = 0 ; j = 100; j ++ ){
+
+        }
+    }
+}
+
 /***********************************************************************************************************************
                                                          * main
  **********************************************************************************************************************/
@@ -38,12 +52,12 @@ int main(void)
     IER = 0x0000;
     IFR = 0x0000;
     InitPieVectTable();
-
+    Delay();
 #if USE_PWM     //  Initialize Gpio for PWM
 
-    PWM_Init(FREQUENCY_SWITCHING) ;
-    // PWM_Init(9875) ;
-    //PWM_Init(10125) ;
+    // PWM_Init(FREQUENCY_SWITCHING) ;
+    //PWM_Init(9875) ;
+    PWM_Init(10125) ;
     // Setup for Interrupts.
     IER|=M_INT3;
     PieCtrlRegs.PIEIER3.bit.INTx1=1;
@@ -63,18 +77,16 @@ int main(void)
 /***************************************************************************************************
                                   * Controller and PLL Initialization
  **************************************************************************************************/
-    enum InverterOutputState g_inv_state = InitialState ;
 
-    float phase = 0.0f ;
-    float pi_output = 0.0f ;
+
     control_modulation = 0.0 ;
-
+    g_inv_state = InitialState ;
     //TS_PLL_TWENTY_KHZ
     init_pll_sogi(&s_pll_sogi_gird, KP_PLL, KI_PLL, TS_PLL_TWENTY_KHZ) ; // InitPLL();
 
     filter_init(p_low_pass_filter, num_filter, den_filter, order_filter ) ;
 
-    init_wdvrc(p_wdvrc, p_low_pass_filter, RC_Q_COEFF, RC_K_RC, RC_LEAD_STEPS) ;
+    init_crc(p_crc, p_low_pass_filter, RC_Q_COEFF, RC_K_RC, RC_LEAD_STEPS) ;
 
     Init_pidStruct(&pid_ig, C_CTRL_KP, C_CTRL_KI ) ;
 
@@ -120,8 +132,8 @@ int main(void)
                 error_rc_input = pid_ig.reference - MeasureBuf[CH_GRID_CURRENT] ;
                 // SCOPE_PU ;
                 // Real repetitive controller
-                //rc_output = calc_wdvrc(p_wdvrc, phase, error_rc_input , 1);
-                rc_output = 0.0 ;
+                rc_output = calc_crc(p_crc, error_rc_input);
+                // rc_output = 0.0 ;
 
                 // Simulate repetitive controller
                 //rc_output = calc_wdvrc(p_wdvrc, phase, 0.001 * sinf(phase), 1);
