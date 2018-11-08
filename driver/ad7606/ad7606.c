@@ -130,7 +130,7 @@ void AD7606_Start(void)
 // If use the XINTF bus to read the AD7606
 void AD7606_XINTF_Read_All(void){
     AD7606_Start();
-    SCOPE_PD ;
+    // SCOPE_PD ;
     // AD7606_CLR_CS ; in GPIO mode
     //asm(" RPT #50 || NOP");
 
@@ -158,7 +158,7 @@ void AD7606_XINTF_Read_All(void){
     // temp[7] = * ( (Uint16 *) XINTF_AD7606) ;
 //    if(AD7606_FIRST_DATA) count = i_ad7606 ++ ;
 
-    SCOPE_PU ;
+    // SCOPE_PU ;
 //    for(i = 0 ; i < 4; i ++ ){
 //        j = (count + i ) % 8 ;
 //        Result_Buf[i] = temp[j] * AD7606_REF_RESOLUTION ;

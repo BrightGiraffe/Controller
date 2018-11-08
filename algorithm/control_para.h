@@ -13,9 +13,9 @@
 #define CURRENT_REF 10.0f
 // #define FREQ_G 50.0f
 
-#define KP_PLL 0.1
-#define KI_PLL 1.0
-#define TS_PLL_TEN_KHZ 1e-4
+#define KP_PLL 0.2
+#define KI_PLL 0.6
+// #define TS_PLL_TEN_KHZ 1e-4
 #define TS_PLL_TWENTY_KHZ 5e-5
 
 #define K_FEEDFORWARD 0.95
@@ -36,7 +36,7 @@
 
 #define RC_LEAD_STEPS 12
 #define RC_Q_COEFF 0.9
-#define RC_K_RC 0.1
+#define RC_K_RC 0.8
 
 extern const float num_filter[3] ;
 extern const float den_filter[3] ;

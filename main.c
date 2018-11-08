@@ -32,8 +32,8 @@ enum InverterOutputState g_inv_state = InitialState ;
 void Delay(void){
     unsigned int i, j = 0 ;
     for(i = 0; i < 65535 ; i ++){
-        for(j = 0 ; j = 100; j ++ ){
-
+        for(j = 0 ; j < 100; j ++ ){
+            asm(" RPT #1 || NOP");
         }
     }
 }
@@ -56,8 +56,8 @@ int main(void)
 #if USE_PWM     //  Initialize Gpio for PWM
 
     // PWM_Init(FREQUENCY_SWITCHING) ;
-    //PWM_Init(9875) ;
-    PWM_Init(10125) ;
+    PWM_Init(9890) ;
+    // PWM_Init(10110) ;
     // Setup for Interrupts.
     IER|=M_INT3;
     PieCtrlRegs.PIEIER3.bit.INTx1=1;

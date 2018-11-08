@@ -34,7 +34,7 @@ float u = 0 ;
 interrupt void epwm1_timer_isr(void) // 7500
 {
     /***** 7.1us:START *****/
-    SCOPE_PU ;
+    // SCOPE_PU ;
 
     AD7606_XINTF_Read_All();
     damping = C_CTRL_KD * MeasureBuf[CH_CAP_CURRENT];
@@ -56,7 +56,7 @@ interrupt void epwm1_timer_isr(void) // 7500
         EPwm1Regs.CMPA.half.CMPA = 0 ;
         EPwm2Regs.CMPA.half.CMPA = CMP ;
     }
-    SCOPE_PD ;
+    // SCOPE_PD ;
     /***** 7.1us:END *****/
 
     flag_timer2_updated = 1 ;
@@ -69,7 +69,7 @@ interrupt void epwm1_timer_isr(void) // 7500
 interrupt void epwm2_timer_isr(void) // 0
 {
     /***** 7.1us:START *****/
-    SCOPE_PU ;
+    // SCOPE_PU ;
 
     AD7606_XINTF_Read_All();
     damping = C_CTRL_KD * MeasureBuf[CH_CAP_CURRENT];
@@ -91,7 +91,7 @@ interrupt void epwm2_timer_isr(void) // 0
         EPwm1Regs.CMPA.half.CMPA = 0 ;
         EPwm2Regs.CMPA.half.CMPA = CMP ;
     }
-    SCOPE_PD ;
+    // SCOPE_PD ;
     /***** 7.1us:END *****/
 
     flag_timer2_updated = 1 ;
