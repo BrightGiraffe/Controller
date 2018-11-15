@@ -55,8 +55,8 @@ int main(void)
     Delay();
 #if USE_PWM     //  Initialize Gpio for PWM
 
-    // PWM_Init(FREQUENCY_SWITCHING) ;
-    PWM_Init(9890) ;
+    PWM_Init(FREQUENCY_SWITCHING) ;
+    // PWM_Init(9890) ;
     // PWM_Init(10110) ;
     // Setup for Interrupts.
     IER|=M_INT3;
