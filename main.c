@@ -82,13 +82,13 @@ int main(void)
     control_modulation = 0.0 ;
     g_inv_state = InitialState ;
     //TS_PLL_TWENTY_KHZ
-    init_pll_sogi(&s_pll_sogi_gird, KP_PLL, KI_PLL, TS_PLL_TWENTY_KHZ) ; // InitPLL();
+    init_pll_sogi(&s_pll_sogi_gird, KP_PLL, KI_PLL, K_GAIN_SOGI_PLL, TS_TWENTY_KHZ) ; // InitPLL();
 
     filter_init(p_low_pass_filter, num_filter, den_filter, order_filter ) ;
 
     init_crc(p_crc, p_low_pass_filter, RC_Q_COEFF, RC_K_RC, RC_LEAD_STEPS) ;
 
-    Init_pidStruct(&pid_ig, C_CTRL_KP, C_CTRL_KI ) ;
+    Init_pidStruct(&pid_ig, C_CTRL_KP, C_CTRL_KI, TS_TWENTY_KHZ ) ;
 
 /***************************************************************************************************
                                              * Main Loop

@@ -15,8 +15,10 @@
 
 #define KP_PLL 0.2
 #define KI_PLL 0.6
+#define K_GAIN_SOGI_PLL 1.4142135623730950488016887242097
+
 // #define TS_PLL_TEN_KHZ 1e-4
-#define TS_PLL_TWENTY_KHZ 5e-5
+#define TS_TWENTY_KHZ 5e-5
 
 #define K_FEEDFORWARD 0.95
 

@@ -8,9 +8,6 @@ Email:  hao.dong.nanjing@gmail.com
 #define PID_H
 #define PID_KD_ENABLED 0
 
-// #define T_CONTROL 1e-4
-#define T_CONTROL 5e-5 // 20kHz control period
-
 typedef struct {
     float kp ;
     float ki ;
@@ -21,7 +18,7 @@ typedef struct {
     float reference ;
 } pidStruct;
 
-void Init_pidStruct(pidStruct * s, float, float) ;
+void Init_pidStruct(pidStruct * s, float, float, float) ;
 float Calc_pidStruct(pidStruct * s, float error);
 
 #endif
