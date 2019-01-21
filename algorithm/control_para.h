@@ -20,7 +20,7 @@
 // #define TS_PLL_TEN_KHZ 1e-4
 #define TS_TWENTY_KHZ 5e-5
 
-#define K_FEEDFORWARD 0.95
+#define K_FEEDFORWARD 0.0
 
 // L = 6.0mH
 //#define C_CTRL_KP 15.0f
