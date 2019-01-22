@@ -12,19 +12,12 @@ float error_pi_input ;
 float phase = 0.0f ;
 float pi_output = 0.0f ;
 
-float debug_scope_1[400] ;
-Uint16 debug_scope_count = 0 ;
-
 float control_modulation = 0.0f ;
+float error = 0.0f, ge_output = 0.0f, gi_output = 0.0f, ig_reference = 0.0f ;
 
 pll_sogi_s s_pll_sogi_gird ;
-pidStruct pid_ig ;
 
-crc_struct crc ;
-crc_struct * p_crc = & crc ;
-
-filter_s low_pass_filter ;
-filter_s * p_low_pass_filter = & low_pass_filter ;
+filter_s ge, gi ;
 
 float test ;
 enum InverterOutputState g_inv_state = InitialState ;
@@ -56,9 +49,6 @@ int main(void)
 #if USE_PWM     //  Initialize Gpio for PWM
 
     PWM_Init(FREQUENCY_SWITCHING) ;
-    // PWM_Init(9890) ;
-    // PWM_Init(10110) ;
-    // Setup for Interrupts.
     IER|=M_INT3;
     PieCtrlRegs.PIEIER3.bit.INTx1=1;
     PieCtrlRegs.PIEIER3.bit.INTx2=1;
@@ -83,12 +73,8 @@ int main(void)
     g_inv_state = InitialState ;
     //TS_PLL_TWENTY_KHZ
     init_pll_sogi(&s_pll_sogi_gird, KP_PLL, KI_PLL, K_GAIN_SOGI_PLL, TS_TWENTY_KHZ) ; // InitPLL();
-
-    filter_init(p_low_pass_filter, num_filter, den_filter, order_filter ) ;
-
-    init_crc(p_crc, p_low_pass_filter, RC_Q_COEFF, RC_K_RC, RC_LEAD_STEPS) ;
-
-    Init_pidStruct(&pid_ig, C_CTRL_KP, C_CTRL_KI, TS_TWENTY_KHZ ) ;
+    // TODO
+    // filter_init() ;
 
 /***************************************************************************************************
                                              * Main Loop
@@ -99,9 +85,6 @@ int main(void)
         {
             SCOPE_PU ;
             flag_timer2_updated = 0 ;
-            debug_scope_count ++ ;
-            debug_scope_count %= 400 ;
-            debug_scope_1[debug_scope_count] =  MeasureBuf[CH_GRID_CURRENT] ;
 
             if( ErrorDetected() ){
                 Shutdown_PWM_RELAY();
@@ -124,27 +107,16 @@ int main(void)
 /*************PLL and Phase angle Generation**************/
             phase = calc_pll_sogi(&s_pll_sogi_gird, MeasureBuf[CH_AC_VOLTAGE] ) ; // 2.2us ;
 
-            pid_ig.reference = CURRENT_REF * sinf(phase) ;
+            ig_reference = CURRENT_REF * sinf(phase) ;
 
 /*****************Control Algorithm***********************/
             // close loop enabled
             if(g_inv_state == CurrentControlled){
-                error_rc_input = pid_ig.reference - MeasureBuf[CH_GRID_CURRENT] ;
-                // SCOPE_PU ;
-                // Real repetitive controller
-                rc_output = calc_crc(p_crc, error_rc_input);
-                // rc_output = 0.0 ;
+                error = ig_reference - MeasureBuf[CH_GRID_CURRENT] ;
+                ge_output = filter_calc(&ge, error);
+                gi_output = filter_calc(&gi, MeasureBuf[CH_GRID_CURRENT]);
 
-                // Simulate repetitive controller
-                //rc_output = calc_wdvrc(p_wdvrc, phase, 0.001 * sinf(phase), 1);
-                // SCOPE_PD ;
-                //debug_scope_1[debug_scope_count] = rc_output ;
-                // rc_output = 0.0 ;
-                error_pi_input = error_rc_input + rc_output ;
-                pi_output = Calc_pidStruct(&pid_ig, error_pi_input) ;
-
-                // Read time damping is used to reduce delay ;
-                control_modulation = pi_output // PI controller
+                control_modulation = ge_output + gi_output // PI controller
                         + MeasureBuf[CH_AC_VOLTAGE] * K_FEEDFORWARD; // PCC voltage feedforward
             }else if(g_inv_state != ErrorEncountered){
                 //calc_wdvrc(p_wdvrc, phase, 0, 0) ;
@@ -200,7 +172,7 @@ int main(void)
                     //StoreVoltage(0, 2.5 + 0.2 * pid_ig.reference , ADDR_DAC8554, 1);
                     break ;
                 default :
-                    StoreVoltage(0, 2.5 + 0.2 * pid_ig.reference , ADDR_DAC8554, 1);
+                    StoreVoltage(0, 2.5 + 0.2 * ig_reference , ADDR_DAC8554, 1);
                 }
                 //StoreVoltage(0, 2 + 0.5 * rc_output , ADDR_DAC8554, 1);
             // StoreVoltage(1,  2 + 2 * debug_scope_1[debug_scope_count] , ADDR_DAC8554, 1);
