@@ -20,11 +20,7 @@
 // #define TS_PLL_TEN_KHZ 1e-4
 #define TS_TWENTY_KHZ 5e-5
 
-#define K_FEEDFORWARD 0.0
-
-// L = 6.0mH
-//#define C_CTRL_KP 15.0f
-//#define C_CTRL_KI 90000.0f
+#define K_FEEDFORWARD 1.0
 
 // L1 = 3.87 mH,
 // C = 10 uF
@@ -33,16 +29,10 @@
 #define C_CTRL_KI 15000.0f
 #define C_CTRL_KD 25.0f
 
-// #define V_CTRL_KP 0.02f
-// #define V_CTRL_KI 60.0f
-
-#define RC_LEAD_STEPS 12
-#define RC_Q_COEFF 0.9
-#define RC_K_RC 0.8
-
-extern const float num_filter[3] ;
-extern const float den_filter[3] ;
-extern const int order_filter ;
+extern const float num_ge[6] ;
+extern const float den_ge[6] ;
+extern const float num_gi[22] ;
+extern const float den_gi[22] ;
 
 
 #endif /* CONTROLLER_CONTROL_PARA_H_ */

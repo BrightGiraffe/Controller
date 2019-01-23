@@ -74,7 +74,8 @@ int main(void)
     //TS_PLL_TWENTY_KHZ
     init_pll_sogi(&s_pll_sogi_gird, KP_PLL, KI_PLL, K_GAIN_SOGI_PLL, TS_TWENTY_KHZ) ; // InitPLL();
     // TODO
-    // filter_init() ;
+    filter_init(&ge, num_ge, den_ge, 5) ;
+    filter_init(&gi, num_gi, den_gi, 21) ;
 
 /***************************************************************************************************
                                              * Main Loop
