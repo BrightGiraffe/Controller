@@ -31,8 +31,8 @@
 
 extern const float num_ge[6] ;
 extern const float den_ge[6] ;
-extern const float num_gi[22] ;
-extern const float den_gi[22] ;
+extern const float num_gi[10] ;
+extern const float den_gi[10] ;
 
 
 #endif /* CONTROLLER_CONTROL_PARA_H_ */
