@@ -74,7 +74,7 @@
 						</toolChain>
 					</folderInfo>
 					<sourceEntries>
-						<entry excluding="algorithm/Controller/RC/crc/test.c|cmd/FLASH2RAM_28335.cmd|algorithm/Controller/RC/irc|source/DSP2833x_SWPrioritizedDefaultIsr.c|algorithm/Controller/RC/wrc|cmd/F28335.cmd|algorithm/Controller/RC/dvrc|source/DSP2833x_SWPrioritizedPieVect.c|cmd/28335_RAM_lnk.cmd|algorithm/Controller/RC/wdvrc_10kHz|algorithm/Controller/filter/test_filter.c|source/Watchdog.c|algorithm/Controller/RC/basic|algorithm/Controller/PR/main_PR.c" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
+						<entry excluding="source/DSP28xxx_SectionCopy_nonBIOS.asm|source/DSP28xxx_CodeStartBranch.asm|cmd/F2833x_nonBIOS_flash.cmd|algorithm/Controller/RC/crc/test.c|cmd/FLASH2RAM_28335.cmd|algorithm/Controller/RC/irc|source/DSP2833x_SWPrioritizedDefaultIsr.c|algorithm/Controller/RC/wrc|cmd/F28335.cmd|algorithm/Controller/RC/dvrc|source/DSP2833x_SWPrioritizedPieVect.c|algorithm/Controller/RC/wdvrc_10kHz|algorithm/Controller/filter/test_filter.c|source/Watchdog.c|algorithm/Controller/RC/basic|algorithm/Controller/PR/main_PR.c" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
 					</sourceEntries>
 				</configuration>
 			</storageModule>

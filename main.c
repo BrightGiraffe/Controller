@@ -88,7 +88,7 @@ int main(void)
             flag_timer2_updated = 0 ;
 
             if( ErrorDetected() ){
-                Shutdown_PWM_RELAY();
+                //Shutdown_PWM_RELAY();
                 g_inv_state = ErrorEncountered ;
             }else{
                 // Do nothing or pull down the IO for the scope to see
@@ -97,7 +97,7 @@ int main(void)
 
             if(g_inv_state == ErrorEncountered ){
                 //SCOPE_PU ;
-                Shutdown_PWM_RELAY() ;
+                //Shutdown_PWM_RELAY() ;
             }else{
                 //SCOPE_PD ;
             }
@@ -117,8 +117,8 @@ int main(void)
                 ge_output = filter_calc(&ge, error);
                 gi_output = filter_calc(&gi, MeasureBuf[CH_GRID_CURRENT]);
 
-                control_modulation = ge_output + gi_output // PI controller
-                        + MeasureBuf[CH_AC_VOLTAGE] * K_FEEDFORWARD; // PCC voltage feedforward
+                control_modulation = ge_output + gi_output; // PI controller
+                        // + MeasureBuf[CH_AC_VOLTAGE] * K_FEEDFORWARD; // PCC voltage feedforward
             }else if(g_inv_state != ErrorEncountered){
                 //calc_wdvrc(p_wdvrc, phase, 0, 0) ;
             }
