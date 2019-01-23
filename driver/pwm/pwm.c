@@ -37,8 +37,7 @@ interrupt void epwm1_timer_isr(void) // 7500
     // SCOPE_PU ;
 
     AD7606_XINTF_Read_All();
-    damping = C_CTRL_KD * MeasureBuf[CH_CAP_CURRENT];
-    u = control_modulation - damping ;
+    u = control_modulation ;
     vm = u / MeasureBuf[CH_DC_BUS] ; // vm = -0.7 ;
     if(vm >= 0){
         CMP =  CarrierPRD *  vm ;
@@ -72,8 +71,7 @@ interrupt void epwm2_timer_isr(void) // 0
     // SCOPE_PU ;
 
     AD7606_XINTF_Read_All();
-    damping = C_CTRL_KD * MeasureBuf[CH_CAP_CURRENT];
-    u = control_modulation - damping ;
+    u = control_modulation ;
     vm = u / MeasureBuf[CH_DC_BUS] ; // vm = -0.7 ;
     if(vm >= 0){
         CMP =  CarrierPRD *  vm ;

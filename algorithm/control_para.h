@@ -22,13 +22,6 @@
 
 #define K_FEEDFORWARD 1.0
 
-// L1 = 3.87 mH,
-// C = 10 uF
-// L2 = 2.2 mH
-#define C_CTRL_KP 20.0f
-#define C_CTRL_KI 15000.0f
-#define C_CTRL_KD 25.0f
-
 extern const float num_ge[6] ;
 extern const float den_ge[6] ;
 extern const float num_gi[10] ;
