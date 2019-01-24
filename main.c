@@ -109,7 +109,8 @@ int main(void)
 /*************PLL and Phase angle Generation**************/
             phase = calc_pll_sogi(&s_pll_sogi_gird, MeasureBuf[CH_AC_VOLTAGE] ) ; // 2.2us ;
 
-            ig_reference = CURRENT_REF * sinf(ref_count * 0.015707963) ;
+            ig_reference = CURRENT_REF * sinf(phase) ;
+            // ig_reference = CURRENT_REF * sinf(ref_count * 0.015707963) ;
             ref_count ++ ;
             ref_count %= 400 ;
 
@@ -120,8 +121,8 @@ int main(void)
                 ge_output = filter_calc(&ge, error);
                 gi_output = filter_calc(&gi, MeasureBuf[CH_GRID_CURRENT]);
 
-                control_modulation = ge_output + gi_output; // PI controller
-                        // + MeasureBuf[CH_AC_VOLTAGE] * K_FEEDFORWARD; // PCC voltage feedforward
+                control_modulation = ge_output + gi_output
+                        + MeasureBuf[CH_AC_VOLTAGE] * K_FEEDFORWARD; // PCC voltage feedforward
             }else if(g_inv_state != ErrorEncountered){
                 //calc_wdvrc(p_wdvrc, phase, 0, 0) ;
             }
