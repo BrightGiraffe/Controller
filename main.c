@@ -14,6 +14,7 @@ float pi_output = 0.0f ;
 
 float control_modulation = 0.0f ;
 float error = 0.0f, ge_output = 0.0f, gi_output = 0.0f, ig_reference = 0.0f ;
+int ref_count = 0 ;
 
 pll_sogi_s s_pll_sogi_gird ;
 
@@ -108,7 +109,9 @@ int main(void)
 /*************PLL and Phase angle Generation**************/
             phase = calc_pll_sogi(&s_pll_sogi_gird, MeasureBuf[CH_AC_VOLTAGE] ) ; // 2.2us ;
 
-            ig_reference = CURRENT_REF * sinf(phase) ;
+            ig_reference = CURRENT_REF * sinf(ref_count * 0.015707963) ;
+            ref_count ++ ;
+            ref_count %= 400 ;
 
 /*****************Control Algorithm***********************/
             // close loop enabled
@@ -169,7 +172,7 @@ int main(void)
             if(g_inv_state != ErrorEncountered){
                 switch(g_inv_state){
                 case CurrentControlled:
-                    StoreVoltage(0, 2.5 + 0.001 * rc_output , ADDR_DAC8554, 1);
+                    StoreVoltage(0, 2.5 + 0.2 * ig_reference , ADDR_DAC8554, 1);
                     //StoreVoltage(0, 2.5 + 0.2 * pid_ig.reference , ADDR_DAC8554, 1);
                     break ;
                 default :
