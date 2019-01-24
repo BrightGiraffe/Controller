@@ -89,7 +89,7 @@ int main(void)
             flag_timer2_updated = 0 ;
 
             if( ErrorDetected() ){
-                //Shutdown_PWM_RELAY();
+                Shutdown_PWM_RELAY();
                 g_inv_state = ErrorEncountered ;
             }else{
                 // Do nothing or pull down the IO for the scope to see
@@ -98,7 +98,7 @@ int main(void)
 
             if(g_inv_state == ErrorEncountered ){
                 //SCOPE_PU ;
-                //Shutdown_PWM_RELAY() ;
+                Shutdown_PWM_RELAY() ;
             }else{
                 //SCOPE_PD ;
             }
