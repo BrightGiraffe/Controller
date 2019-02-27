@@ -20,7 +20,10 @@ pll_sogi_s s_pll_sogi_gird ;
 
 filter_s ge, gi ;
 
-float test ;
+float bufSum[400];
+int indexSum ;
+float dcSum = 0.0f ;
+
 enum InverterOutputState g_inv_state = InitialState ;
 
 void Delay(void){
@@ -78,6 +81,10 @@ int main(void)
     filter_init(&ge, num_ge, den_ge, 5) ;
     filter_init(&gi, num_gi, den_gi, 9) ;
 
+    for(indexSum = 0 ; indexSum < 400 ; indexSum ++ ){
+        bufSum[indexSum] = 0.0f ;
+    }
+    indexSum = 0 ;
 /***************************************************************************************************
                                              * Main Loop
  **************************************************************************************************/
@@ -117,9 +124,15 @@ int main(void)
 /*****************Control Algorithm***********************/
             // close loop enabled
             if(g_inv_state == CurrentControlled){
+                dcSum += MeasureBuf[CH_GRID_CURRENT];
+                dcSum -= bufSum[indexSum] ;
+                bufSum[indexSum] = MeasureBuf[CH_GRID_CURRENT] ;
+                indexSum ++ ;
+                indexSum %= 400 ;
+
                 error = ig_reference - MeasureBuf[CH_GRID_CURRENT] ;
                 ge_output = filter_calc(&ge, error);
-                gi_output = filter_calc(&gi, MeasureBuf[CH_GRID_CURRENT]);
+                gi_output = filter_calc(&gi, MeasureBuf[CH_GRID_CURRENT] - dcSum * 0.0025);
 
                 control_modulation = ge_output + gi_output
                         + MeasureBuf[CH_AC_VOLTAGE] * K_FEEDFORWARD; // PCC voltage feedforward
